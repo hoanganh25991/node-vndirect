@@ -1,0 +1,40 @@
+{
+  "dependencies": {
+    "algoliasearch": "^3.24.5",
+    "axios": "^0.17.0",
+    "chromeless": "^1.2.0",
+    "crypto": "^1.0.1",
+    "dotenv": "^4.0.0",
+    "es6-promise": "^4.1.1",
+    "firebase-admin": "^5.4.3",
+    "isomorphic-fetch": "^2.2.1",
+    "lodash.chunk": "^4.2.0",
+    "minimist": "^1.2.0",
+    "onesignal": "^0.1.2",
+    "puppeteer": "~0.11.0",
+    "redux": "^3.7.2",
+    "request": "^2.83.0",
+    "rimraf": "^2.6.2",
+    "single-line-log": "^1.1.2",
+    "unirest": "^0.5.1",
+    "babel-cli": "^6.26.0",
+    "babel-preset-node7": "^1.5.0"
+  },
+  "devDependencies": {
+    "husky": "^0.14.3",
+    "lint-staged": "^4.0.0",
+    "prettier": "^1.4.4"
+  },
+  "scripts": {
+    "precommit": "lint-staged",
+    "start": "babel-node .",
+    "test": "babel-node scripts/run-test.js",
+    "monitor": "babel-node src/reducers/firebaseLogReact.test.js"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write --no-semi --print-width 120",
+      "git add"
+    ]
+  }
+}
