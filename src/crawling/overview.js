@@ -24,16 +24,20 @@ const getDescription = url => {
           let data = {}
           let transVn = {}
 
-          await Promise.all(
-            liArr.reduce(async li => {
+          const dataArr = await Promise.all(
+            liArr.map(async li => {
               const title = li.querySelector(":nth-child(1)").innerText
               const value = li.querySelector(":nth-child(2)").innerText
               const key = await window.removeSymbol(title)
-              data[key] = value
-              transVn[key] = title
-              return "Ok"
+              return { key, title, value }
             })
           )
+
+          dataArr.forEach(obj => {
+            const { title, key, value } = obj
+            data[key] = value
+            transVn[key] = title
+          })
 
           return { data, transVn }
         } catch (err) {
