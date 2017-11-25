@@ -23,7 +23,7 @@ const getDescription = url => {
           const dataArr = await Promise.all(
             liArr.map(async li => {
               const title = li.querySelector(":nth-child(1)").innerText
-              const value = li.querySelector(":nth-child(2)").innerText
+              const value = +li.querySelector(":nth-child(2)").innerText.match(/([\w,.]+) %/)[1]
               const key = await window.removeSymbol(title)
               return { key, title, value }
             })
