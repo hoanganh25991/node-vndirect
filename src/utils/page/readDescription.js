@@ -23,22 +23,25 @@ export const getPageActionName = pageAction => {
   return pageActionName
 }
 
-export const queuePageActions = (getState, dispatch) => async (page, lastReturn, pageActions) => {
+export const queuePageActions = (getState, dispatch) => async (page, lastResult, pageActions) => {
   return await pageActions.reduce(async (carry, pageAction) => {
-    const lastReturn = await carry
-    return runPageAction(getState, dispatch)(page, lastReturn, pageAction)
-  }, Promise.resolve(lastReturn))
+    const lastResult = await carry
+    return runPageAction(getState, dispatch)(page, lastResult, pageAction)
+  }, Promise.resolve(lastResult))
 }
 
-export const runPageAction = (getState, dispatch) => async (page, lastReturn, pageAction) => {
+export const runPageAction = (getState, describe) => async (page, lastReturn, pageAction) => {
   const { level } = getState()
   const { title, actions: pageActions } = pageAction
 
-  dispatch({ type: "LOG", msg: title, level })
+  describe({ type: "LOG", msg: title, level })
 
   // Has child actions, self call to callApiUrl it
   const hasChildActions = Boolean(pageActions)
-  if (hasChildActions)  return await queuePageActions(() => ({ level: 1 }), dispatch)(page, lastReturn, pageActions)
+
+  if (hasChildActions) {
+    return await queuePageActions(() => ({ level: 1 }), describe)(page, lastReturn, pageActions)
+  }
 
   // Run page action
   const actionName = getPageActionName(pageAction)
@@ -63,7 +66,7 @@ export const runPageAction = (getState, dispatch) => async (page, lastReturn, pa
     // Merge return
     return Object.assign(lastReturn, actionReturn)
   } catch (err) {
-    dispatch({ type: "LOG_ERROR", err })
+    describe({ type: "LOG_ERROR", err })
     return lastReturn
   }
 }
@@ -72,17 +75,17 @@ export const runPageAction = (getState, dispatch) => async (page, lastReturn, pa
  * Read description
  * Then run crawling
  * @param getState
- * @param dispatch
+ * @param describe
  */
-const readDescription = (getState, dispatch) => async description => {
-  dispatch({ type: "LOG", msg: "Reading description", level: 0 })
+const readDescription = (getState, describe) => async description => {
+  describe({ type: "LOG", msg: "Reading description", level: 0 })
 
   const page = await TinyPage()
   const pageActions = [...description]
-  const storeReturn = await queuePageActions(() => ({ level: 0 }), dispatch)(page, {}, pageActions)
+  const storeReturn = await queuePageActions(() => ({ level: 0 }), describe)(page, {}, pageActions)
   await page.close()
 
-  dispatch({ type: "LOG", msg: "Crawling done", level: 0 })
+  describe({ type: "LOG", msg: "Crawling done", level: 0 })
 
   return storeReturn
 }

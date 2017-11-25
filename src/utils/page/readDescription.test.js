@@ -13,7 +13,10 @@ import TinyPage from "./TinyPage"
 
   const _readDescription = readDescription(readDescriptionState, store.dispatch)
 
-  LogToConsole(store)
+  LogToConsole(() => {
+    const { logState } = store.getState()
+    return logState
+  }, store)
 
   const TEST_CASE = `Read description`
   const _ = console.log
