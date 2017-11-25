@@ -55,7 +55,8 @@ export const runPageAction = (getState, describe) => async (page, lastReturn, pa
     const { screenshot } = pageAction
 
     if (screenshot) {
-      const imgName = (screenshot && screenshot.image) || title.replace(/[^a-zA-Z]/g, "")
+      describe({ type: "LOG", msg: "Screenshot", level })
+      const imgName = (typeof screenshot === "object" && screenshot.image) || title.replace(/[^a-zA-Z]/g, "")
       await page.screenshot({ path: `${screenshotDir}/${imgName}.jpg`, quality })
     }
 

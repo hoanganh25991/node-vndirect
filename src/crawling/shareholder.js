@@ -109,7 +109,7 @@ const getDescription = url => {
  * @constructor
  */
 export const crawlingShareholder = (getState, dispatch) => async url => {
-  dispatch({ type: "LOG", msg: `\x1b[36m<<< GET OWNERSHIP >>>\x1b[0m` })
+  dispatch({ type: "LOG", msg: `\x1b[36m<<< GET SHAREHOLDER >>>\x1b[0m` })
 
   const storeReturn = await readDescription(getState, dispatch)(getDescription(url))
   const { shareholder: { structure, main } } = storeReturn
