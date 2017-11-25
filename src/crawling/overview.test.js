@@ -17,15 +17,18 @@ const _ = console.log
 
 // Start test
 const TEST_CASE = "Crawling Overview"
+let pass = true
 
 ;(async () => {
   const url = "https://www.vndirect.com.vn/portal/tong-quan/aam.shtml"
   try {
-    const xxx = await crawlingOverview(null, dispatch)(url)
-    console.log(xxx)
+    const { data, transVn } = await crawlingOverview(null, dispatch)(url)
+    pass = data && transVn
   } catch (err) {
     _(err)
+    pass = false
   } finally {
     await TinyPage.closeBrowser()
+    pass ? _(`\x1b[42m[PASS]\x1b[0m ${TEST_CASE}`) : _(`\x1b[41m[FAIL]\x1b[0m ${TEST_CASE}`)
   }
 })()
