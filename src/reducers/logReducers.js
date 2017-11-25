@@ -30,14 +30,15 @@ export const logReducers = (state = { msg: "", level: 0 }, action) => {
 /**
  * State monitor (only log msg) by
  * Dump into console
+ * @param getState
  * @param store
  * @constructor
  */
-export const LogToConsole = store => {
+export const LogToConsole = (getState, store) => {
   let lastLogState = null
 
   store.subscribe(() => {
-    const { logState } = store.getState()
+    const logState = getState()
     const shouldLog = !lastLogState || lastLogState.msg !== logState.msg
 
     if (shouldLog) {
