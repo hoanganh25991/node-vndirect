@@ -92,7 +92,7 @@ const getDescription = url => {
             return record
           })
 
-          return { data: data2, transVn: transVn2 }
+          return { structure: { data, transVn }, main: { data: data2, transVn: transVn2 } }
         } catch (err) {
           return "HasErr"
         }
@@ -108,12 +108,12 @@ const getDescription = url => {
  * @param dispatch
  * @constructor
  */
-export const crawlingShareholderStructure = (getState, dispatch) => async url => {
+export const crawlingShareholder = (getState, dispatch) => async url => {
   dispatch({ type: "LOG", msg: `\x1b[36m<<< GET OWNERSHIP >>>\x1b[0m` })
 
   const storeReturn = await readDescription(getState, dispatch)(getDescription(url))
-  const { shareholder: { data, transVn } } = storeReturn
-  return { data, transVn }
+  const { shareholder: { structure, main } } = storeReturn
+  return { structure, main }
 }
 
-export default crawlingShareholderStructure
+export default crawlingShareholder

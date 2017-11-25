@@ -1,4 +1,4 @@
-import { crawlingShareholderStructure } from "./shareholderStructure"
+import { crawlingShareholder } from "./shareholder"
 import { combineReducers, createStore } from "redux"
 import { logReducers, LogToConsole } from "../reducers/logReducers"
 import { TinyPage } from "../utils/page/TinyPage"
@@ -21,9 +21,9 @@ let pass = true
 ;(async () => {
   const url = "https://www.vndirect.com.vn/portal/co-dong-chinh/aam.shtml"
   try {
-    const { data, transVn } = await crawlingShareholderStructure(null, dispatch)(url)
-    _("RECHECK", data, transVn)
-    pass = data && transVn
+    const { structure, main } = await crawlingShareholder(null, dispatch)(url)
+    _("RECHECK", structure, main)
+    pass = structure && main
   } catch (err) {
     _(err)
     pass = false
