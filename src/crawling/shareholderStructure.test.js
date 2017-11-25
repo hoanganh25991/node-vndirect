@@ -22,7 +22,7 @@ let pass = true
   const url = "https://www.vndirect.com.vn/portal/co-dong-chinh/aam.shtml"
   try {
     const { data, transVn } = await crawlingShareholderStructure(null, dispatch)(url)
-    _("Recheck", data)
+    _("RECHECK", data, transVn)
     pass = data && transVn
   } catch (err) {
     _(err)
