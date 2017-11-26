@@ -26,6 +26,7 @@ export const removeSymbolOnCharacter = str => {
   }, str)
 
   const removedSpace = nonUnicodeStr.replace(/\s/g, "")
+  const firebaseKey = removedSpace.replace(/[.#$/[\]]/, "")
 
-  return removedSpace
+  return firebaseKey
 }
