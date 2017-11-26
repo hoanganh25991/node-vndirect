@@ -1,5 +1,5 @@
 import readDescription from "../utils/page/readDescription"
-import { removeSymbolOnCharacter } from "../utils/removeSymbolOnCharacter"
+import { buildHierachy } from "./buildHierachy"
 
 const _ = console.log
 
@@ -163,6 +163,70 @@ const getDecriptionAllYear = (url, years) => {
   ]
 }
 
+const getHierachyDescription = url => {
+  return [
+    {
+      title: `Build Hierachy Shape`,
+      actions: [
+        {
+          title: `Go to ${url}`,
+          goto: url
+        },
+        {
+          title: `Expose buildHierachy`,
+          exposeFunction: ["buildHierachy", buildHierachy]
+        },
+        {
+          title: `Get data`,
+          evaluate: async () => {
+            // Dependencies method
+            // Inject by code into sandbox
+            // Promise run take time throught the bridge
+            // Not good to pass it here, but FAST executed
+            const removeSymbol = str => {
+              const mapNonUnicodeToUnicode = {
+                a: "á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ",
+                d: "đ",
+                e: "é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ",
+                i: "í|ì|ỉ|ĩ|ị",
+                o: "ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ",
+                u: "ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự",
+                y: "ý|ỳ|ỷ|ỹ|ỵ"
+              }
+
+              const nonUnicodeStr = Object.keys(mapNonUnicodeToUnicode).reduce((carry, nonUnicode) => {
+                let unicode = mapNonUnicodeToUnicode[nonUnicode]
+                carry = carry.replace(new RegExp(unicode, "g"), nonUnicode)
+                return carry
+              }, str)
+
+              return nonUnicodeStr.replace(/\s/g, "")
+            }
+
+            // MAIN CODE
+            const trOArr = [
+              ...document.querySelectorAll(
+                "#fBalanceSheet > div.content_small > div > div.table_Market.clearfix > table > tbody > tr > td > table > tbody > tr"
+              )
+            ]
+
+            const trArr = trOArr.filter((i, index) => index > 0).map(tr => {
+              const tdKey = [...tr.querySelectorAll("td")][0]
+              const lv = tr.getAttribute("class")
+              const title = tdKey.innerText.trim()
+              const key = removeSymbol(title)
+              return { key, lv }
+            })
+
+            return await window.buildHierachy(trArr)
+          },
+          storeReturnAsKey: "hierachyShape"
+        }
+      ]
+    }
+  ]
+}
+
 const shouldCrawlingYears = [2017, 2016, 2015, 2014, 2013]
 // const shouldCrawlingYears = [2014, 2013]
 
@@ -176,7 +240,12 @@ export const crawlingBalanceSheet = (getState, dispatch) => async (url, years = 
   dispatch({ type: "LOG", msg: `\x1b[36m<<< GET BALANCE SHEET >>>\x1b[0m` })
   const storeReturn = await readDescription(getState, dispatch)(getDecriptionAllYear(url, years))
   const dataArr = Object.values(storeReturn).reduce((carry, chunkArr) => [...carry, ...chunkArr], [])
-  return { balanceSheet: dataArr }
+
+  dispatch({ type: "LOG", msg: `` })
+  const { hierachyShape } = await readDescription(getState, dispatch)(getHierachyDescription(url))
+  _(hierachyShape[0])
+  process.exit()
+  return { balanceSheet: dataArr, hierachyShape }
 }
 
 export default crawlingBalanceSheet
