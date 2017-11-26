@@ -21,12 +21,13 @@ let pass = true
 ;(async () => {
   const url = "https://www.vndirect.com.vn/portal/bang-can-doi-ke-toan/aam.shtml"
   try {
-    const { balanceSheet } = await crawlingBalanceSheet(null, dispatch)(url)
+    const { balanceSheet, hierachyShape, transVn } = await crawlingBalanceSheet(null, dispatch)(url)
     _("RECHECK")
     _([...balanceSheet].shift())
     _([...balanceSheet].pop())
 
-    pass = balanceSheet
+    const rightRoot = hierachyShape[0].key === "TỔNGCỘNGTÀISẢN"
+    pass = balanceSheet && hierachyShape && transVn && rightRoot
   } catch (err) {
     _(err)
     pass = false

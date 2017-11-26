@@ -204,23 +204,38 @@ const getHierachyDescription = url => {
             }
 
             // MAIN CODE
+            const transVn = {}
+
             const trOArr = [
               ...document.querySelectorAll(
                 "#fBalanceSheet > div.content_small > div > div.table_Market.clearfix > table > tbody > tr > td > table > tbody > tr"
               )
             ]
 
+            const trTitle = trOArr[0]
+            // Find out header
+            const headerTds = [...trTitle.querySelectorAll("td")]
+            headerTds.forEach(td => {
+              const title = td.innerText.trim()
+              const key = removeSymbol(title)
+              transVn[key] = title
+            })
+
             const trArr = trOArr.filter((i, index) => index > 0).map(tr => {
               const tdKey = [...tr.querySelectorAll("td")][0]
               const lv = tr.getAttribute("class")
               const title = tdKey.innerText.trim()
               const key = removeSymbol(title)
+              // Just take avantage of key-title
+              // Push it in transVn
+              transVn[key] = title
               return { key, lv }
             })
 
-            return await window.buildHierachy(trArr)
+            const hierachyShape = await window.buildHierachy(trArr)
+            return { hierachyShape, transVn }
           },
-          storeReturnAsKey: "hierachyShape"
+          storeReturnAsKey: "hierachyShapeTransVn"
         }
       ]
     }
@@ -242,10 +257,10 @@ export const crawlingBalanceSheet = (getState, dispatch) => async (url, years = 
   const dataArr = Object.values(storeReturn).reduce((carry, chunkArr) => [...carry, ...chunkArr], [])
 
   dispatch({ type: "LOG", msg: `` })
-  const { hierachyShape } = await readDescription(getState, dispatch)(getHierachyDescription(url))
-  _(hierachyShape[0])
-  process.exit()
-  return { balanceSheet: dataArr, hierachyShape }
+  const { hierachyShapeTransVn: { hierachyShape, transVn } } = await readDescription(getState, dispatch)(
+    getHierachyDescription(url)
+  )
+  return { balanceSheet: dataArr, hierachyShape, transVn }
 }
 
 export default crawlingBalanceSheet
