@@ -1,4 +1,4 @@
-import { crawlingBusinessReport } from "./businessReport"
+import { crawlingCashFlow } from "./cashFlow"
 import { combineReducers, createStore } from "redux"
 import { logReducers, LogToConsole } from "../reducers/logReducers"
 import { TinyPage } from "../utils/page/TinyPage"
@@ -16,17 +16,17 @@ const { dispatch } = store
 const _ = console.log
 
 // Start test
-const TEST_CASE = "Crawling Business Report"
+const TEST_CASE = "Crawling Cash Flow"
 let pass = true
 ;(async () => {
-  const url = "https://www.vndirect.com.vn/portal/bao-cao-ket-qua-kinh-doanh/aam.shtml"
+  const url = "https://www.vndirect.com.vn/portal/bao-cao-luu-chuyen-tien-te/aam.shtml"
   try {
-    const { businessReport } = await crawlingBusinessReport(null, dispatch)(url)
+    const { cashFlow } = await crawlingCashFlow(null, dispatch)(url)
     _("RECHECK")
-    _([...businessReport].shift())
-    _([...businessReport].pop())
+    _([...cashFlow].shift())
+    _([...cashFlow].pop())
 
-    pass = businessReport
+    pass = cashFlow
   } catch (err) {
     _(err)
     pass = false
