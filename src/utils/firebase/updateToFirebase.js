@@ -35,7 +35,7 @@ const updateObjX = (getState, dispatch) => (mainBranch, objXBranch, objXIndexKey
  * @param getState
  * @param dispatch
  */
-export const updateManyObjXs = (getState, dispatch) => (mainBranch, objXBranch, objXIndexKey) => objXs => {
+export const updateObjs = (getState, dispatch) => (mainBranch, objXBranch, objXIndexKey) => objXs => {
   return objXs.reduce(async (carry, objX) => {
     await carry
     return updateObjX(getState, dispatch)(mainBranch, objXBranch, objXIndexKey)(objX)
@@ -44,4 +44,4 @@ export const updateManyObjXs = (getState, dispatch) => (mainBranch, objXBranch, 
 
 export const closeApp = async () => await thisApp.delete()
 
-export default updateManyObjXs
+export default updateObjs

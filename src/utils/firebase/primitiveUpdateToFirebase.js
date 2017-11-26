@@ -24,7 +24,7 @@ const updateObjX = (getState, describe) => (mainBranch, objXBranch) => async pri
  * @param getState
  * @param describe
  */
-export const updateManyObjXs = (getState, describe) => (mainBranch, objXBranch) => primitives => {
+export const updatePrimitive = (getState, describe) => (mainBranch, objXBranch) => primitives => {
   return Promise.all(
     primitives.map(async primitive => {
       return await updateObjX(getState, describe)(mainBranch, objXBranch)(primitive)
@@ -34,4 +34,4 @@ export const updateManyObjXs = (getState, describe) => (mainBranch, objXBranch) 
 
 export const closeApp = async () => await thisApp.delete()
 
-export default updateManyObjXs
+export default updatePrimitive

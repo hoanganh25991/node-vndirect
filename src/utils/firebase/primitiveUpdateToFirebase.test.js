@@ -11,7 +11,7 @@ let pass = true
 LogToConsole(() => store.getState().logState, store)
 ;(async () => {
   const mainBranch = "tmp"
-  const objXBranch = "primitiveUpdateToFirebase"
+  const objXBranch = "updatePrimitive"
   const now = new Date().getTime()
   const msg = [now]
 

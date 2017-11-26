@@ -13,7 +13,7 @@ LogToConsole(() => store.getState().logState, store)
 ////
 ;(async () => {
   const mainBranch = "tmp"
-  const objXBranch = "updateToFirebase"
+  const objXBranch = "updateObjs"
   const objXIndexKey = "title"
   const objXTitle = new Date().getTime()
   const objXs = [
