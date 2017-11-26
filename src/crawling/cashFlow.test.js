@@ -26,7 +26,7 @@ let pass = true
     _([...cashFlow].shift())
     _([...cashFlow].pop())
 
-    const rightRoot = hierachyShape[0].key === "TỔNGDOANHTHUHOẠTĐỘNGKINHDOANH"
+    const rightRoot = hierachyShape[0].key === "LƯUCHUYỂNTIỀNTỪHOẠTĐỘNGKINHDOANH-GIÁNTIẾP"
     pass = cashFlow && hierachyShape && transVn && rightRoot
   } catch (err) {
     _(err)
