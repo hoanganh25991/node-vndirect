@@ -1,31 +1,26 @@
-import { crawlingOverview } from "./overview"
+import { getInfo } from "./stockCodeInfo"
 import { combineReducers, createStore } from "redux"
 import { logReducers, LogToConsole } from "../reducers/logReducers"
 import { TinyPage } from "../utils/page/TinyPage"
 
 // Setup store
+// Test case
 const store = createStore(combineReducers({ logState: logReducers }))
-LogToConsole(() => {
-  const { logState } = store.getState()
-  return logState
-}, store)
-
 const { dispatch } = store
-
-// Stuff
 const _ = console.log
-
-// Start test
-const TEST_CASE = "Crawling Overview"
+const TEST_CASE = "Stock Info"
 let pass = true
-;(async () => {
-  const url = "https://www.vndirect.com.vn/portal/tong-quan/aam.shtml"
-  try {
-    const { data: overview, transVn } = await crawlingOverview(null, dispatch)(url)
-    _("RECHECK")
-    _(overview)
 
-    pass = overview && transVn
+// Watch Log
+LogToConsole(() => store.getState().logState, store)
+;(async () => {
+  const stockCode = "AAA"
+  try {
+    const stockInfo = await getInfo(null, dispatch)(stockCode)
+    _("RECHECK")
+    _(stockInfo)
+
+    pass = stockInfo
   } catch (err) {
     _(err)
     pass = false
