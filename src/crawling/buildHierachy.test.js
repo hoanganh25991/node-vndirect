@@ -1,5 +1,5 @@
 import { buildHierachy } from "./buildHierachy"
-import testArr from "./buildHierachy2.test.json"
+import testArr from "./buildHierachy.test.json"
 
 const TEST_CASE = "Build Hierachy"
 const _ = console.log
