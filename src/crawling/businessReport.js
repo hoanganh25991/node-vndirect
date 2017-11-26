@@ -12,18 +12,18 @@ const getDescriptionOneYear = (url, year) => {
 
         // Choose the quater started at
         // The quater 4
-        const q4 = document.querySelector("#fBalanceSheet select:nth-child(2) > option:nth-child(5)")
+        const q4 = document.querySelector("#fIncomeStatement_fiscalQuarter > option:nth-child(5)")
         q4.setAttribute("selected", "true")
 
         // Choose how many quaters after the started one
         // Choose 4 ( 4 quaters as 1 year)
-        const list4 = document.querySelector("#fBalanceSheet select:nth-child(5) > option:nth-child(4)")
+        const list4 = document.querySelector("#fIncomeStatement_numberTerm > option:nth-child(4)")
         list4.setAttribute("selected", "true")
 
         // Pick up the year we want
         // Reset selected first
         // Find out option we want, then select it
-        const yearOpts = [...document.querySelectorAll("#fBalanceSheet select:nth-child(3) option")]
+        const yearOpts = [...document.querySelectorAll("#fIncomeStatement_fiscalYear option")]
         yearOpts.forEach(option => option.removeAttribute("selected"))
         const yearOpt = yearOpts.filter(option => option.innerText.trim() === `${year}`)[0]
         yearOpt && yearOpt.setAttribute("selected", "true")
@@ -34,8 +34,8 @@ const getDescriptionOneYear = (url, year) => {
       }
     },
     {
-      title: `Wait for navigation`,
-      waitForNavigation: { timeout: 200000 }
+      title: `Wait 1s`,
+      waitFor: 1000
     },
     {
       title: `Get data ${year}`,
@@ -83,11 +83,7 @@ const getDescriptionOneYear = (url, year) => {
         // Store main shareholder
         // let transVn = {}
 
-        const trOArr = [
-          ...document.querySelectorAll(
-            "#fBalanceSheet > div.content_small > div > div.table_Market.clearfix > table > tbody > tr > td > table > tbody > tr"
-          )
-        ]
+        const trOArr = [...document.querySelectorAll("#Listed_IncomeStatement_tableResult tr")]
 
         const trTitle = trOArr[0]
         const trArr = trOArr.filter((i, index) => index > 0)
@@ -127,7 +123,7 @@ const getDescriptionOneYear = (url, year) => {
 
         return data
       },
-      // screenshot: { image: `balance-sheet-${year}` },
+      // screenshot: { image: `business-report-${year}` },
       storeReturnAsKey: `${year}`
     }
   ]
@@ -137,7 +133,7 @@ const getDecriptionAllYear = (url, years) => {
   const cpYears = [...years]
   return [
     {
-      title: `Find out balance sheet for: ${years.join("|")}`,
+      title: `Find out business report for: ${years.join("|")}`,
       actions: [
         {
           title: `Go to url: ${url}`,
@@ -172,11 +168,11 @@ const shouldCrawlingYears = [2017, 2016, 2015, 2014, 2013]
  * @param dispatch
  * @constructor
  */
-export const crawlingBalanceSheet = (getState, dispatch) => async (url, years = shouldCrawlingYears) => {
-  dispatch({ type: "LOG", msg: `\x1b[36m<<< GET BALANCE SHEET >>>\x1b[0m` })
+export const crawlingBusinessReport = (getState, dispatch) => async (url, years = shouldCrawlingYears) => {
+  dispatch({ type: "LOG", msg: `\x1b[36m<<< GET BUSINESS REPORT >>>\x1b[0m` })
   const storeReturn = await readDescription(getState, dispatch)(getDecriptionAllYear(url, years))
   const dataArr = Object.values(storeReturn).reduce((carry, chunkArr) => [...carry, ...chunkArr], [])
-  return { balanceSheet: dataArr }
+  return { businessReport: dataArr }
 }
 
-export default crawlingBalanceSheet
+export default crawlingBusinessReport
