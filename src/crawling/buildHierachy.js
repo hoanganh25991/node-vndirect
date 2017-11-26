@@ -1,8 +1,6 @@
-import { parseLevel as parseLv } from "../utils/parse"
 const _ = console.log
 
 export const buildHierachy = arr => {
-  // const tArr = arr.map(item => ({ ...item, lv: parseLv(item.lv) }))
   const root = { subs: [] }
   const parrentSheet = { root }
   arr.forEach(item => {
@@ -18,7 +16,6 @@ export const buildHierachy = arr => {
 
     // Add him into his parent
     // Add him into parentSheet
-    pItem.subs.push(curItem)
     parrentSheet[lv] = curItem
   })
 

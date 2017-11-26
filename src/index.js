@@ -1,3 +1,4 @@
+import { crawlingVn30 } from "./crawling/vn30"
 import { getInfo as getStockInfo } from "./crawling/stockCodeInfo"
 import { save as saveToFirebase, closeApp } from "./firebase/save"
 import { combineReducers, createStore } from "redux"
@@ -13,12 +14,20 @@ let pass = true
 
 // Watch Log
 LogToConsole(() => store.getState().logState, store)
-;(async () => {
-  const stockCode = "AAA"
 
+const saveStock = async stockCode => {
+  const stockInfo = await getStockInfo(null, dispatch)(stockCode)
+  await saveToFirebase(null, dispatch)(stockInfo)
+}
+;(async () => {
   try {
-    const stockInfo = await getStockInfo(null, dispatch)(stockCode)
-    await saveToFirebase(null, dispatch)(stockInfo)
+    const { vn30 } = await crawlingVn30(null, dispatch)()
+    vn30.splice(2)
+    await vn30.reduce(async (carry, stockCode) => {
+      await carry
+      _(`Run on stockCode: ${stockCode}`)
+      return saveStock(stockCode)
+    }, Promise.resolve())
   } catch (err) {
     _(err)
     pass = false
