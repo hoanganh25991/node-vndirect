@@ -32,13 +32,75 @@ const getDescription = (url, year) => {
       waitForNavigation: { timeout: 3000 }
     },
     {
+      title: `Expose remove symbol in characters`,
+      exposeFunction: ["removeSymbol", removeSymbolOnCharacter]
+    },
+    {
       title: `Get data ${year}`,
-      evaluate: () => {
-        return {
-          data: document.querySelector(
-            "#fBalanceSheet > div.content_small > div > div.si_tab_new > div > h2 > select:nth-child(3)"
-          ).value
+      evaluate: async () => {
+        const parseComma = str => +str.replace(/,/g, "")
+        const removeSymbol = str => {
+          const mapNonUnicodeToUnicode = {
+            a: "á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ",
+            d: "đ",
+            e: "é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ",
+            i: "í|ì|ỉ|ĩ|ị",
+            o: "ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ",
+            u: "ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự",
+            y: "ý|ỳ|ỷ|ỹ|ỵ"
+          }
+
+          const nonUnicodeStr = Object.keys(mapNonUnicodeToUnicode).reduce((carry, nonUnicode) => {
+            let unicode = mapNonUnicodeToUnicode[nonUnicode]
+            carry = carry.replace(new RegExp(unicode, "g"), nonUnicode)
+            return carry
+          }, str)
+
+          return nonUnicodeStr.replace(/\s/g, "")
         }
+        // Store main shareholder
+        let transVn = {}
+
+        const trArr = [
+          ...document.querySelectorAll(
+            "#fBalanceSheet > div.content_small > div > div.table_Market.clearfix > table > tbody > tr > td > table > tbody > tr"
+          )
+        ]
+        const trTitle = trArr.shift()
+
+        // Find out header
+        const headerThs = [...trTitle.querySelectorAll("td")]
+        const headerArr = headerThs.map((th, index) => {
+          const title = th.innerText
+          const key = removeSymbol(title)
+          return { index, key, title }
+        })
+
+        // Remove the first empty
+        headerArr.shift()
+
+        headerArr.forEach(header => {
+          const { key, title } = header
+          transVn[key] = title
+        })
+
+        const data = {}
+        headerArr.forEach(header => {
+          const { index, key } = header
+          const record = {}
+
+          trArr.forEach(tr => {
+            const tds = [...tr.querySelectorAll("td")]
+            const title = tds[0].innerText.trim()
+            const key = removeSymbol(title)
+            record[key] = parseComma(tds[index].innerText.trim())
+            transVn[key] = title
+          })
+
+          data[key] = record
+        })
+
+        return { data, transVn }
       },
       screenshot: true,
       storeReturnAsKey: "balanceSheet"
