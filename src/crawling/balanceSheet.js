@@ -1,16 +1,10 @@
 import readDescription from "../utils/page/readDescription"
 import { removeSymbolOnCharacter } from "../utils/removeSymbolOnCharacter"
 
+const _ = console.log
+
 const getDescriptionOneYear = (url, year) => {
   return [
-    {
-      title: `Go to url: ${url}`,
-      goto: url
-    },
-    {
-      title: `Expose year ${year}`,
-      exposeFunction: ["year", () => year]
-    },
     {
       title: `Select year`,
       evaluate: async () => {
@@ -27,9 +21,12 @@ const getDescriptionOneYear = (url, year) => {
         list4.setAttribute("selected", "true")
 
         // Pick up the year we want
+        // Reset selected first
+        // Find out option we want, then select it
         const yearOpts = [...document.querySelectorAll("#fBalanceSheet select:nth-child(3) option")]
+        yearOpts.forEach(option => option.removeAttribute("selected"))
         const yearOpt = yearOpts.filter(option => option.innerText.trim() === `${year}`)[0]
-        yearOpt.setAttribute("selected", "true")
+        yearOpt && yearOpt.setAttribute("selected", "true")
 
         // Run filter
         const runBtn = document.querySelector("div.si_tab_new input")
@@ -38,7 +35,7 @@ const getDescriptionOneYear = (url, year) => {
     },
     {
       title: `Wait for navigation`,
-      waitForNavigation: { timeout: 3000 }
+      waitForNavigation: { timeout: 200000 }
     },
     {
       title: `Expose remove symbol in characters`,
@@ -73,16 +70,16 @@ const getDescriptionOneYear = (url, year) => {
         }
         const parseQuater = (str, tz = 7) => {
           const matcheds = str.match(/(\d+)\/(\d+)/)
+          // Get out info
           const qX = +matcheds[1]
           const yrX = matcheds[2]
-          // 2008-09-15T15:53:00+0500
           const month = (qX - 1) * 3 + 1
-          // I want the default timezone is Asia/Ho_Chi_Minh
+          // I want the default timezone as Asia/Ho_Chi_Minh
           const tzStr = `${tz}`.length === 2 ? `${tz}` : `0${tz}`
           const mSr = `${month}`.length === 2 ? `${month}` : `0${month}`
-
+          // sample dateStr: 2008-09-15T15:53:00+0500
           const date = new Date(`${yrX}-${mSr}-01T00:00:00+${tzStr}00`)
-
+          // timestamp
           return Math.floor(date.getTime() / 1000)
         }
 
@@ -113,7 +110,7 @@ const getDescriptionOneYear = (url, year) => {
           return title !== ""
         })
 
-        const data = {}
+        const data = []
         headerArr.forEach(header => {
           const { index, key, title } = header
           const record = {}
@@ -129,30 +126,49 @@ const getDescriptionOneYear = (url, year) => {
             record[key] = parseComma(tds[index].innerText.trim())
           })
 
-          data[key] = record
+          data.push(record)
         })
 
         return data
       },
-      screenshot: true,
+      screenshot: { image: `get-data-year-${year}` },
       storeReturnAsKey: `Year${year}`
     }
   ]
 }
 
 const getDecriptionAllYear = (url, years) => {
+  const cpYears = [...years]
   return [
     {
       title: `Find out balance sheet for these years: ${years.join("|")}`,
-      actions: years.map(year => ({
-        title: `Find for ${year}`,
-        actions: getDescriptionOneYear(url, year)
-      }))
+      actions: [
+        {
+          title: `Go to url: ${url}`,
+          goto: url
+        },
+        {
+          title: `Expose year`,
+          exposeFunction: [
+            "year",
+            () => {
+              const curYr = cpYears.shift()
+              _(`  \\__ ${curYr}`)
+              return curYr
+            }
+          ]
+        },
+        ...years.map(year => ({
+          title: `Find for ${year}`,
+          actions: getDescriptionOneYear(url, year)
+        }))
+      ]
     }
   ]
 }
 
-const shouldCrawlingYears = [2017, 2016, 2015, 2014, 2013]
+// const shouldCrawlingYears = [2017, 2016, 2015, 2014, 2013]
+const shouldCrawlingYears = [2014, 2013]
 
 /**
  * Crawling categories
@@ -164,7 +180,8 @@ export const crawlingBalanceSheet = (getState, dispatch) => async (url, years = 
   dispatch({ type: "LOG", msg: `\x1b[36m<<< GET BALANCE SHEET >>>\x1b[0m` })
 
   const storeReturn = await readDescription(getState, dispatch)(getDecriptionAllYear(url, years))
-  return { balanceSheet: storeReturn }
+  const dataArr = Object.values(storeReturn).reduce((carry, chunkArr) => [...carry, ...chunkArr], [])
+  return { balanceSheet: dataArr }
 }
 
 export default crawlingBalanceSheet
