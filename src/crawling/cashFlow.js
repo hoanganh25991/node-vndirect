@@ -61,7 +61,10 @@ const getDescriptionOneYear = (url, year) => {
             return carry
           }, str)
 
-          return nonUnicodeStr.replace(/\s/g, "")
+          const removedSpace = nonUnicodeStr.replace(/\s/g, "")
+          const firebaseKey = removedSpace.replace(/[.#$/[\]]/, "")
+
+          return firebaseKey
         }
         const parseQuater = (str, tz = 7) => {
           const matcheds = str.match(/(\d+)\/(\d+)/)
@@ -200,7 +203,10 @@ const getHierachyDescription = url => {
                 return carry
               }, str)
 
-              return nonUnicodeStr.replace(/\s/g, "")
+              const removedSpace = nonUnicodeStr.replace(/\s/g, "")
+              const firebaseKey = removedSpace.replace(/[.#$/[\]]/, "")
+
+              return firebaseKey
             }
 
             // MAIN CODE
@@ -216,6 +222,7 @@ const getHierachyDescription = url => {
             const headerTds = [...trTitle.querySelectorAll("td")]
             headerTds.forEach(td => {
               const title = td.innerText.trim()
+              if (title === "") return
               const key = removeSymbol(title)
               transVn[key] = title
             })

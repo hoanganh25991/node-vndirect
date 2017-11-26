@@ -1,28 +1,30 @@
-import index from "./crawling"
+import { getInfo as getStockInfo } from "./crawling/stockCodeInfo"
+import { save as saveToFirebase, closeApp } from "./firebase/save"
 import { combineReducers, createStore } from "redux"
 import { logReducers, LogToConsole } from "./reducers/logReducers"
-import TinyPage from "./utils/page/TinyPage"
+import { TinyPage } from "./utils/page/TinyPage"
 
-////
+// Setup store
+const store = createStore(combineReducers({ logState: logReducers }))
+const { dispatch } = store
+const _ = console.log
+const TEST_CASE = "Crawling&Save"
+let pass = true
+
+// Watch Log
+LogToConsole(() => store.getState().logState, store)
 ;(async () => {
-  const store = createStore(combineReducers({ logState: logReducers }))
-  const _index = index(() => ({}), store.dispatch)
-
-  LogToConsole(store)
-
-  const TEST_CASE = "Crawling"
-  const _ = console.log
+  const stockCode = "AAA"
 
   try {
-    const commands = await _index()
-    const pass = commands.length > 0
-    _(`[RECHECK PASS] First command: ${JSON.stringify(commands[0], null, 2)}`)
-    _(`[RECHECK PASS] Find ${commands.length} command`)
-    return pass ? _(`\x1b[42m[PASS]\x1b[0m ${TEST_CASE}`) : _(`\x1b[41m[FAIL]\x1b[0m ${TEST_CASE}`)
+    const stockInfo = await getStockInfo(null, dispatch)(stockCode)
+    await saveToFirebase(null, dispatch)(stockInfo)
   } catch (err) {
     _(err)
-    return _(`\x1b[41m[FAIL]\x1b[0m ${TEST_CASE}`)
+    pass = false
   } finally {
     await TinyPage.closeBrowser()
+    await closeApp()
+    pass ? _(`\x1b[42m[PASS]\x1b[0m ${TEST_CASE}`) : _(`\x1b[41m[FAIL]\x1b[0m ${TEST_CASE}`)
   }
 })()

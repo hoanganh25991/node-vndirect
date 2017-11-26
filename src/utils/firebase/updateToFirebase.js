@@ -24,9 +24,9 @@ const updateObjX = (getState, dispatch) => (mainBranch, objXBranch, objXIndexKey
   })
 
   const objXKey = sameObjX ? Object.keys(sameObjX)[0] : refToObjXBranch.push().key
-  dispatch({ type: "LOG", msg: `Saving store...` })
-  dispatch({ type: "LOG", msg: `ObjX ${objXIndexKey} : ${id}` })
-  dispatch({ type: "LOG", msg: `ObjX key: ${objXKey}` })
+  // dispatch({ type: "LOG", msg: `Saving store...` })
+  // dispatch({ type: "LOG", msg: `ObjX ${objXIndexKey} : ${id}` })
+  // dispatch({ type: "LOG", msg: `ObjX key: ${objXKey}` })
   await db.ref(`${mainBranch}/${objXBranch}/${objXKey}`).update(objX)
 }
 
