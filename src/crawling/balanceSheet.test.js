@@ -22,7 +22,7 @@ let pass = true
   const url = "https://www.vndirect.com.vn/portal/bang-can-doi-ke-toan/aam.shtml"
   try {
     const { balanceSheet } = await crawlingBalanceSheet(null, dispatch)(url)
-    _("RECHECK", balanceSheet)
+    _("RECHECK", balanceSheet[0])
     pass = balanceSheet
   } catch (err) {
     _(err)

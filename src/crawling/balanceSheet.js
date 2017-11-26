@@ -167,8 +167,8 @@ const getDecriptionAllYear = (url, years) => {
   ]
 }
 
-// const shouldCrawlingYears = [2017, 2016, 2015, 2014, 2013]
-const shouldCrawlingYears = [2014, 2013]
+const shouldCrawlingYears = [2017, 2016, 2015, 2014, 2013]
+// const shouldCrawlingYears = [2014, 2013]
 
 /**
  * Crawling categories
@@ -178,7 +178,6 @@ const shouldCrawlingYears = [2014, 2013]
  */
 export const crawlingBalanceSheet = (getState, dispatch) => async (url, years = shouldCrawlingYears) => {
   dispatch({ type: "LOG", msg: `\x1b[36m<<< GET BALANCE SHEET >>>\x1b[0m` })
-
   const storeReturn = await readDescription(getState, dispatch)(getDecriptionAllYear(url, years))
   const dataArr = Object.values(storeReturn).reduce((carry, chunkArr) => [...carry, ...chunkArr], [])
   return { balanceSheet: dataArr }
