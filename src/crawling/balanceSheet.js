@@ -183,6 +183,7 @@ const getHierachyDescription = url => {
             // Inject by code into sandbox
             // Promise run take time throught the bridge
             // Not good to pass it here, but FAST executed
+            const parseLevel = str => +str.match(/lv(\d+)/)[1]
             const removeSymbol = str => {
               const mapNonUnicodeToUnicode = {
                 a: "á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ",
@@ -223,7 +224,7 @@ const getHierachyDescription = url => {
 
             const trArr = trOArr.filter((i, index) => index > 0).map(tr => {
               const tdKey = [...tr.querySelectorAll("td")][0]
-              const lv = tr.getAttribute("class")
+              const lv = parseLevel(tr.getAttribute("class"))
               const title = tdKey.innerText.trim()
               const key = removeSymbol(title)
               // Just take avantage of key-title
