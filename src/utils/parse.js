@@ -16,3 +16,4 @@ export const parseQuater = (str, tz = 7) => {
   // timestamp
   return Math.floor(date.getTime() / 1000)
 }
+export const parseLevel = str => +str.match(/lv(\d+)/)[1]
