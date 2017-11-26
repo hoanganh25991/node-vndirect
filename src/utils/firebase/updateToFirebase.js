@@ -35,7 +35,7 @@ const updateObjX = (getState, dispatch) => (mainBranch, objXBranch, objXIndexKey
  * @param getState
  * @param dispatch
  */
-const updateManyObjXs = (getState, dispatch) => (mainBranch, objXBranch, objXIndexKey) => objXs => {
+export const updateManyObjXs = (getState, dispatch) => (mainBranch, objXBranch, objXIndexKey) => objXs => {
   return objXs.reduce(async (carry, objX) => {
     await carry
     return updateObjX(getState, dispatch)(mainBranch, objXBranch, objXIndexKey)(objX)

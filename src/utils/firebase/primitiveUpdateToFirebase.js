@@ -24,7 +24,7 @@ const updateObjX = (getState, describe) => (mainBranch, objXBranch) => async pri
  * @param getState
  * @param describe
  */
-const updateManyObjXs = (getState, describe) => (mainBranch, objXBranch) => primitives => {
+export const updateManyObjXs = (getState, describe) => (mainBranch, objXBranch) => primitives => {
   return Promise.all(
     primitives.map(async primitive => {
       return await updateObjX(getState, describe)(mainBranch, objXBranch)(primitive)
