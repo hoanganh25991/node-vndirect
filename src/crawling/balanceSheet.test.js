@@ -21,9 +21,9 @@ let pass = true
 ;(async () => {
   const url = "https://www.vndirect.com.vn/portal/bang-can-doi-ke-toan/aam.shtml"
   try {
-    const { data, transVn } = await crawlingBalanceSheet(null, dispatch)(url)
-    _("RECHECK", data, transVn)
-    pass = data && transVn
+    const { balanceSheet } = await crawlingBalanceSheet(null, dispatch)(url)
+    _("RECHECK", balanceSheet)
+    pass = balanceSheet
   } catch (err) {
     _(err)
     pass = false
