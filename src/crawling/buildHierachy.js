@@ -9,8 +9,15 @@ export const buildHierachy = arr => {
     const { lv: itemLv } = curItem
     const lv = itemLv - arrRootLv
     // Find his parent
-    const pLv = lv > 0 ? lv - 1 : "root"
-    const pItem = parrentSheet[pLv]
+    // _("parrentSheet, pLv", parrentSheet, pLv)
+    let curLv = lv
+    let pItem = null
+    do {
+      const pLv = curLv > 0 ? curLv - 1 : "root"
+      pItem = parrentSheet[pLv]
+      curLv--
+    } while (!pItem)
+
     const { subs = [] } = pItem
     // Add him into his parent
     subs.push(curItem)
