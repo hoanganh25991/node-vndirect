@@ -18,11 +18,13 @@ const _ = console.log
 // Start test
 const TEST_CASE = "Crawling Overview"
 let pass = true
-
 ;(async () => {
   const url = "https://www.vndirect.com.vn/portal/tong-quan/aam.shtml"
   try {
     const { data, transVn } = await crawlingOverview(null, dispatch)(url)
+    _("RECHECK")
+    _(data)
+
     pass = data && transVn
   } catch (err) {
     _(err)

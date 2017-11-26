@@ -22,7 +22,10 @@ let pass = true
   const url = "https://www.vndirect.com.vn/portal/co-dong-chinh/aam.shtml"
   try {
     const { structure, main } = await crawlingShareholder(null, dispatch)(url)
-    _("RECHECK", structure, main)
+    _("RECHECK")
+    _(structure)
+    _(main)
+
     pass = structure && main
   } catch (err) {
     _(err)
