@@ -252,7 +252,7 @@ export const crawlingBusinessReport = (getState, dispatch) => async (url, years 
   const store2 = await readDescription(getState, dispatch)(getHierachyDescription(url))
   const { hierachyShapeTransVn: { hierachyShape, transVn } } = store2
 
-  return { businessReport: dataArr, hierachyShape, transVn }
+  return { data: dataArr, hierachyShape, transVn }
 }
 
 export default crawlingBusinessReport

@@ -259,7 +259,7 @@ export const crawlingCashFlow = (getState, dispatch) => async (url, years = shou
   const store2 = await readDescription(getState, dispatch)(getHierachyDescription(url))
   const { hierachyShapeTransVn: { hierachyShape, transVn } } = store2
 
-  return { cashFlow: dataArr, hierachyShape, transVn }
+  return { data: dataArr, hierachyShape, transVn }
 }
 
 export default crawlingCashFlow

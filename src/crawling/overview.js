@@ -60,7 +60,7 @@ export const crawlingOverview = (getState, dispatch) => async url => {
 
   const storeReturn = await readDescription(getState, dispatch)(getDescription(url))
   const { overview: { data, transVn } } = storeReturn
-  return { overview: data, transVn }
+  return { data, transVn }
 }
 
 export default crawlingOverview

@@ -17,7 +17,7 @@ import { crawlingCashFlow } from "./cashFlow"
  */
 export const getInfo = (getState, dispatch) => async stockCode => {
   const lwSC = stockCode.toLowerCase()
-  const [overview, shareholder, { balanceSheet }, { businessReport }, { cashFlow }] = await Promise.all([
+  const [overview, { structure, main }, balanceSheet, businessReport, cashFlow] = await Promise.all([
     crawlingOverview(null, dispatch)(`https://www.vndirect.com.vn/portal/tong-quan/${lwSC}.shtml`),
     crawlingShareholder(null, dispatch)(`https://www.vndirect.com.vn/portal/co-dong-chinh/${lwSC}.shtml`),
     crawlingBalanceSheet(null, dispatch)(`https://www.vndirect.com.vn/portal/bang-can-doi-ke-toan/${lwSC}.shtml`),
@@ -30,7 +30,8 @@ export const getInfo = (getState, dispatch) => async stockCode => {
   return {
     code: stockCode,
     overview,
-    shareholder,
+    shareholderStructure: structure,
+    mainShareholder: main,
     balanceSheet,
     businessReport,
     cashFlow

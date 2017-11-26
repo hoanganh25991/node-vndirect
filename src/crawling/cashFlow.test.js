@@ -21,13 +21,13 @@ let pass = true
 ;(async () => {
   const url = "https://www.vndirect.com.vn/portal/bao-cao-luu-chuyen-tien-te/aam.shtml"
   try {
-    const { cashFlow, hierachyShape, transVn } = await crawlingCashFlow(null, dispatch)(url)
+    const { data, hierachyShape, transVn } = await crawlingCashFlow(null, dispatch)(url)
     _("RECHECK")
-    _([...cashFlow].shift())
-    _([...cashFlow].pop())
+    _([...data].shift())
+    _([...data].pop())
 
     const rightRoot = hierachyShape[0].key === "LƯUCHUYỂNTIỀNTỪHOẠTĐỘNGKINHDOANH-GIÁNTIẾP"
-    pass = cashFlow && hierachyShape && transVn && rightRoot
+    pass = data && hierachyShape && transVn && rightRoot
   } catch (err) {
     _(err)
     pass = false

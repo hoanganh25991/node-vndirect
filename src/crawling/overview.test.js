@@ -21,11 +21,11 @@ let pass = true
 ;(async () => {
   const url = "https://www.vndirect.com.vn/portal/tong-quan/aam.shtml"
   try {
-    const { data: overview, transVn } = await crawlingOverview(null, dispatch)(url)
+    const { data, transVn } = await crawlingOverview(null, dispatch)(url)
     _("RECHECK")
-    _(overview)
+    _(data)
 
-    pass = overview && transVn
+    pass = data && transVn
   } catch (err) {
     _(err)
     pass = false

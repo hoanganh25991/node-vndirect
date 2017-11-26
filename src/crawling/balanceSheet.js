@@ -261,7 +261,7 @@ export const crawlingBalanceSheet = (getState, dispatch) => async (url, years = 
   const { hierachyShapeTransVn: { hierachyShape, transVn } } = await readDescription(getState, dispatch)(
     getHierachyDescription(url)
   )
-  return { balanceSheet: dataArr, hierachyShape, transVn }
+  return { data: dataArr, hierachyShape, transVn }
 }
 
 export default crawlingBalanceSheet

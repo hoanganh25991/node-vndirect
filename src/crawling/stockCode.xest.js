@@ -18,7 +18,7 @@ LogToConsole(() => store.getState().logState, store)
   try {
     const stockInfo = await getInfo(null, dispatch)(stockCode)
     _("RECHECK")
-    _(stockInfo)
+    _(stockInfo["overview"])
 
     pass = stockInfo
   } catch (err) {
