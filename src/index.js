@@ -22,7 +22,7 @@ const saveStock = async stockCode => {
 ;(async () => {
   try {
     const { vn30 } = await crawlingVn30(null, dispatch)()
-    vn30.splice(2)
+    // vn30.splice(2) // Throttle for test
     await vn30.reduce(async (carry, stockCode) => {
       await carry
       _(`Run on stockCode: ${stockCode}`)

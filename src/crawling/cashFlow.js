@@ -34,7 +34,7 @@ const getDescriptionOneYear = (url, year) => {
     },
     {
       title: `Wait for navigation`,
-      waitForNavigation: { timeout: 200000 }
+      waitForNavigation: { timeout: 3500 }
     },
     {
       title: `Get data ${year}`,
@@ -61,10 +61,7 @@ const getDescriptionOneYear = (url, year) => {
             return carry
           }, str)
 
-          const removedSpace = nonUnicodeStr.replace(/\s/g, "")
-          const firebaseKey = removedSpace.replace(/[.#$/[\]]/, "")
-
-          return firebaseKey
+          return nonUnicodeStr.replace(/[.#$/[\]\s]/g, "")
         }
         const parseQuater = (str, tz = 7) => {
           const matcheds = str.match(/(\d+)\/(\d+)/)
@@ -203,10 +200,7 @@ const getHierachyDescription = url => {
                 return carry
               }, str)
 
-              const removedSpace = nonUnicodeStr.replace(/\s/g, "")
-              const firebaseKey = removedSpace.replace(/[.#$/[\]]/, "")
-
-              return firebaseKey
+              return nonUnicodeStr.replace(/[.#$/[\]\s]/g, "")
             }
 
             // MAIN CODE
