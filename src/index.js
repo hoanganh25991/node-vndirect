@@ -15,19 +15,16 @@ let pass = true
 // Watch Log
 LogToConsole(() => store.getState().logState, store)
 
-const saveStock = async stockCode => {
-  const stockInfo = await getStockInfo(null, dispatch)(stockCode)
-  await saveToFirebase(null, dispatch)(stockInfo)
+const saveStock = (getState, dispatch) => async stockCode => {
+  _(`Run on stockCode: ${stockCode}`)
+  const stockInfo = await getStockInfo(getState, dispatch)(stockCode)
+  await saveToFirebase(getState, dispatch)(stockInfo)
 }
 ;(async () => {
   try {
     const { vn30 } = await crawlingVn30(null, dispatch)()
     // vn30.splice(2) // Throttle for test
-    await vn30.reduce(async (carry, stockCode) => {
-      await carry
-      _(`Run on stockCode: ${stockCode}`)
-      return saveStock(stockCode)
-    }, Promise.resolve())
+    await vn30.reduce((carry, stockCode) => carry.then(() => saveStock(null, dispatch)(stockCode)), Promise.resolve())
   } catch (err) {
     _(err)
     pass = false
